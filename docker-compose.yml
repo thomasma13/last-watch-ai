@@ -18,7 +18,7 @@ services:
     depends_on:
       - php
       - mysql
-      - deepstack
+      #- deepstack
       - watcher
       - queue
       - scheduler
@@ -95,16 +95,16 @@ services:
     networks:
       - laravel
 
-  deepstack:
-    image: deepquestai/deepstack
-    container_name: lw_deepstack
-    restart: unless-stopped
-    environment:
-      - VISION-DETECTION=True
-    networks:
-      - laravel
-    ports:
-      - "5001:5000"
+  #deepstack:
+  #  image: deepquestai/deepstack
+  #  container_name: lw_deepstack
+  #  restart: unless-stopped
+  #  environment:
+  #    - VISION-DETECTION=True
+  #  networks:
+  #    - laravel
+  #  ports:
+  #    - "5001:5000"
 
   watcher:
     image: akmolina28/webhook-folder-watcher:0.2.0
