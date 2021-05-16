@@ -54,7 +54,7 @@ services:
     container_name: lw_php
     restart: unless-stopped
     ports:
-      - "9000:9000"
+      - "9001:9000"
     volumes:
       - ./src:/mnt/user/appdata/lastwatchai/php
     networks:
