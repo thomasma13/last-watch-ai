@@ -13,7 +13,7 @@ services:
     ports:
       - "${WEB_INTERFACE_PORT:-8082}:80"
     volumes:
-      - ./src:/mnt/user/appdata/lastwatchai/php
+      - ./src:/var/www/app
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
@@ -40,7 +40,7 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
-      - ./mysql:/mnt/user/appdata/lastwatchai/mysql
+      - ./mysql:/var/lib/mysql
     networks:
       - laravel
 
@@ -56,12 +56,12 @@ services:
     ports:
       - "9001:9000"
     volumes:
-      - ./src:/mnt/user/appdata/lastwatchai/php
+      - ./src:/var/www/app
     networks:
       - laravel
     environment:
       DATA_RETENTION_DAYS: ${DATA_RETENTION_DAYS:-7}
-      APP_URL: ${WEB_INTERFACE_URL:-localhost}:${WEB_INTERFACE_PORT:-8080}
+      APP_URL: ${WEB_INTERFACE_URL:-localhost}:${WEB_INTERFACE_PORT:-8082}
       APP_DEBUG: ${APP_DEBUG:-false}
       DEEPSTACK_BASE_URL: ${DEEPSTACK_BASE_URL:-http://deepstack:5000/}
       COMPRESS_IMAGES: ${COMPRESS_IMAGES:-true}
@@ -85,13 +85,13 @@ services:
       QUEUE_CONNECTION: database
       QUEUE_NAME: high,medium,low
       NUMPROCS: 8
-      APP_URL: ${WEB_INTERFACE_URL:-localhost}:${WEB_INTERFACE_PORT:-8080}
+      APP_URL: ${WEB_INTERFACE_URL:-localhost}:${WEB_INTERFACE_PORT:-8082}
       COMPRESS_IMAGES: ${COMPRESS_IMAGES:-true}
       IMAGE_QUALITY: ${IMAGE_QUALITY:-75}
       DELAY: 3
       TRIES: 3
     volumes:
-      - ./src:/mnt/user/appdata/lastwatchai/php
+      - ./src:/var/www/app
     networks:
       - laravel
 
@@ -110,7 +110,7 @@ services:
     image: akmolina28/webhook-folder-watcher:0.2.0
     container_name: lw_watcher
     volumes:
-      - ./src:/mnt/user/appdata/lastwatchai/php
+      - ./src:/var/www/app
       - ${WATCH_FOLDER}:/watch
     restart: unless-stopped
     environment:
@@ -125,8 +125,8 @@ services:
     image: composer:1.9
     container_name: lw_composer
     volumes:
-      - ./src:/mnt/user/appdata/lastwatchai/php
-    working_dir: /mnt/user/appdata/lastwatchai/php
+      - ./src:/var/www/app
+    working_dir: /var/www/app
     depends_on:
       - php
     networks:
@@ -137,8 +137,8 @@ services:
     image: node:13.7
     container_name: lw_npm
     volumes:
-      - ./src:/mnt/user/appdata/lastwatchai/php
-    working_dir: /mnt/user/appdata/lastwatchai/php
+      - ./src:/var/www/app
+    working_dir: /var/www/app
     entrypoint: ['npm']
 
   artisan:
@@ -150,10 +150,10 @@ services:
         - GROUP_ID=${GID:-1000}
     container_name: lw_artisan
     volumes:
-      - ./src:/mnt/user/appdata/lastwatchai/php
+      - ./src:/var/www/app
     depends_on:
       - mysql
-    working_dir: /mnt/user/appdata/lastwatchai/php
+    working_dir: /var/www/app
     networks:
       - laravel
     entrypoint: ['php', '/var/www/app/artisan']
